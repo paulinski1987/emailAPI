@@ -1,11 +1,9 @@
 {
   "name": "app.js",
   "version": "1.0.0",
-  "description": "Email logic for paulbanks.info",
+  "description": "Contact form to email API",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js",
     "start": "node app.js"
   },
   "author": "Paul Banks",

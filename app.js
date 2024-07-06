@@ -1,46 +1,39 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 require('dotenv').config();
 const cors = require('cors');
-const nodemailer = require('nodemailer');
+const { MailtrapClient } = require('mailtrap');
 const _log = console.log;
-
-
-
-function getMailer(){
-  return nodemailer.createTransport({
-    host: process.env.HOST,
-    port: process.env.PORT,
-    secure: false,
-    auth: {
-      user: process.env.UNAME,
-      pass: process.env.PASS
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });    
-}
+const TOKEN = process.env.TOKEN;
+const ENDPOINT = process.env.ENDPOINT;
+const RECV = process.env.RECV;
 
 function sendEmail(req){
-  const transporter = getMailer();
-  const mailOptions = {
-    // from: req.body.email,
-    from: 'paul@email.com',
-    to: 'mathewp9876@protonmail.com',
-    text: `name: ${req.body.name}\nphone: ${req.body.phone}\nemail: ${req.body.email}\n\ndescription: ${req.body.description}`
+  const MAILBODY = `${new Date()}\nName: ${req.body.name}\nEmail: ${req.body.email}\nPhone: ${req.body.phone}\n\nDescription:${req.body.description}`
+  const client = new MailtrapClient({
+    endpoint: ENDPOINT,
+    token: TOKEN
+  });
 
+  const sender = {
+    email: "noreply@paulbanks.info",
+    name: "Paul Banks"
   };
 
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      _log(`error: ${err}`);
-    } else {
-      _log(`email sent: ${info.response}`);
-    }
-  })
-} 
+  const recipients = [
+    { email: RECV }
+  ];
 
+client.send({
+  from: sender,
+  to: recipients,
+  subject: "Service Request",
+  text: MAILBODY,
+  category: "Service Request"
+}).then(console.log, console.error);
 
+}
 
 const app = express();
 app.use(cors());

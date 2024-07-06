@@ -7,7 +7,6 @@ const { MailtrapClient } = require('mailtrap');
 const _log = console.log;
 const TOKEN = process.env.TOKEN;
 const ENDPOINT = process.env.ENDPOINT;
-const RECV = process.env.RECV;
 
 function sendEmail(req){
   const MAILBODY = `${new Date()}\nName: ${req.body.name}\nEmail: ${req.body.email}\nPhone: ${req.body.phone}\n\nDescription:${req.body.description}`
@@ -16,11 +15,15 @@ function sendEmail(req){
     token: TOKEN
   });
 
+  if (String(req.body.destination) == 'tabgs') _log('tabgs comparison successfull');
+  else if (String(req.body.destination) == 'paul') _log ('paul comparison successfull');
+  else _log('!Test failed.')
+
   const sender = {
     email: "noreply@paulbanks.info",
     name: "Paul Banks"
   };
-
+  const RECV = String(req.body.destination) == 'tabgs'? process.env.RECV2 : process.env.RECV;
   const recipients = [
     { email: RECV }
   ];
